@@ -106,7 +106,7 @@ export const GraphPlotter: React.FC<GraphPlotterProps> = ({ width = 600, height 
     if (mode === "normal") {
         const step = (xmax - xmin) / points;
         for (let i = 0; i <= points; i++) {
-            const x = xmin + step * i;
+            const x = parseFloat((xmin + step * i).toFixed(4));
             const y = evaluateFunction(expression, x);
             if (Number.isFinite(y)) data.push({ x, y });
         }
@@ -115,18 +115,29 @@ export const GraphPlotter: React.FC<GraphPlotterProps> = ({ width = 600, height 
         for (let i = 0; i <= points; i++) {
             const t = tmin + step * i;
             const p = evaluateParametric(exprX, exprY, t);
-            if (p) data.push(p);
+            if (p) {
+                data.push({
+                    x: parseFloat(p.x.toFixed(4)),
+                    y: parseFloat(p.y.toFixed(4))
+                });
+            }
         }
+        // パラメトリックモードの場合はx軸でソートしない（軌跡を描くため）
     }
 
     return (
-        <div className="bg-slate-900 text-white p-8 rounded-2xl shadow-2xl border border-slate-800 max-w-4xl mx-auto my-8 font-sans">
-            <h2 className="text-3xl font-extrabold mb-8 text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-emerald-400">
-                2次元グラフ描画
-            </h2>
+        <div className="bg-slate-900/80 backdrop-blur-xl text-white p-8 rounded-3xl shadow-[0_0_50px_-12px_rgba(56,189,248,0.3)] border border-slate-700/50 max-w-5xl mx-auto my-8 font-sans transition-all duration-500 hover:shadow-[0_0_60px_-10px_rgba(56,189,248,0.4)]">
+            <div className="flex items-center justify-between mb-10">
+                <h2 className="text-4xl font-black tracking-tight text-transparent bg-clip-text bg-gradient-to-br from-blue-400 via-emerald-400 to-cyan-400">
+                    Interactive Plotter
+                </h2>
+                <div className="px-4 py-1 rounded-full bg-slate-800/50 border border-slate-700 text-xs font-mono text-slate-400 animate-pulse">
+                    Live Preview
+                </div>
+            </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
-                <div className="space-y-4">
+            <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 mb-8">
+                <div className="lg:col-span-4 space-y-6">
                     <div>
                         <label className="block text-sm font-semibold text-slate-400 mb-1">モード切替</label>
                         <select
@@ -222,7 +233,8 @@ export const GraphPlotter: React.FC<GraphPlotterProps> = ({ width = 600, height 
                     </div>
                 </div>
 
-                <div className="bg-slate-800/50 p-4 rounded-xl border border-slate-700 h-[400px]">
+                <div className="lg:col-span-8 bg-slate-800/30 p-6 rounded-3xl border border-slate-700/50 h-[500px] shadow-inner relative group">
+                    <div className="absolute inset-0 bg-gradient-to-br from-blue-500/5 to-emerald-500/5 rounded-3xl pointer-events-none" />
                     <ResponsiveContainer width="100%" height="100%">
                         <LineChart data={data} margin={{ top: 20, right: 20, left: 0, bottom: 20 }}>
                             <CartesianGrid strokeDasharray="3 3" stroke="#334155" />
@@ -231,9 +243,14 @@ export const GraphPlotter: React.FC<GraphPlotterProps> = ({ width = 600, height 
                                 type="number"
                                 stroke="#94a3b8"
                                 fontSize={12}
+                                domain={['auto', 'auto']}
                                 tickFormatter={(val) => val.toFixed(1)}
                             />
-                            <YAxis stroke="#94a3b8" fontSize={12} />
+                            <YAxis 
+                                stroke="#94a3b8" 
+                                fontSize={12}
+                                domain={['auto', 'auto']}
+                            />
                             <Tooltip
                                 contentStyle={{
                                     backgroundColor: "#1e293b",
@@ -242,15 +259,24 @@ export const GraphPlotter: React.FC<GraphPlotterProps> = ({ width = 600, height 
                                     color: "#f8fafc",
                                 }}
                                 itemStyle={{ color: "#38bdf8" }}
+                                formatter={(value: number) => [value.toFixed(4), "y"]}
+                                labelFormatter={(label: number) => `x: ${label.toFixed(4)}`}
                             />
                             <Line
                                 type="monotone"
                                 dataKey="y"
-                                stroke="#38bdf8"
-                                strokeWidth={3}
+                                stroke="url(#lineGradient)"
+                                strokeWidth={4}
                                 dot={false}
-                                animationDuration={1000}
+                                animationDuration={1500}
+                                isAnimationActive={true}
                             />
+                            <defs>
+                                <linearGradient id="lineGradient" x1="0" y1="0" x2="1" y2="0">
+                                    <stop offset="0%" stopColor="#38bdf8" />
+                                    <stop offset="100%" stopColor="#10b981" />
+                                </linearGradient>
+                            </defs>
                         </LineChart>
                     </ResponsiveContainer>
                 </div>
