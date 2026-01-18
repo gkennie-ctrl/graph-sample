@@ -252,37 +252,27 @@ export const GraphPlotter: React.FC<GraphPlotterProps> = ({ width = 600, height 
                 </div>
 
                 <div className="w-full lg:w-2/3">
-                    <div className="bg-slate-950 p-4 rounded-2xl border border-slate-800 h-[400px] md:h-[500px] shadow-inner">
-                        <ResponsiveContainer width="100%" height="100%">
-                            <LineChart data={data} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
-                                <CartesianGrid strokeDasharray="3 3" stroke="#1e293b" vertical={false} />
-                                <XAxis
-                                    dataKey="x"
-                                    type="number"
-                                    stroke="#475569"
-                                    fontSize={10}
-                                    tickLine={false}
-                                    axisLine={false}
+                    <div className="bg-slate-950 p-4 rounded-2xl border border-slate-800 h-[400px] md:h-[500px] shadow-inner flex items-center justify-center overflow-hidden">
+                        {data.length > 0 ? (
+                            <LineChart 
+                                width={600} 
+                                height={400} 
+                                data={data}
+                                margin={{ top: 20, right: 30, left: 20, bottom: 20 }}
+                            >
+                                <CartesianGrid stroke="#1e293b" strokeDasharray="3 3" />
+                                <XAxis 
+                                    dataKey="x" 
+                                    type="number" 
+                                    stroke="#475569" 
                                     domain={['dataMin', 'dataMax']}
-                                    tickFormatter={(val) => val.toFixed(1)}
                                 />
                                 <YAxis 
                                     stroke="#475569" 
-                                    fontSize={10}
-                                    tickLine={false}
-                                    axisLine={false}
                                     domain={['dataMin', 'dataMax']}
                                 />
                                 <Tooltip
-                                    contentStyle={{
-                                        backgroundColor: "#0f172a",
-                                        border: "1px solid #1e293b",
-                                        borderRadius: "12px",
-                                        fontSize: "12px"
-                                    }}
-                                    itemStyle={{ color: "#38bdf8" }}
-                                    formatter={(value: number) => [value.toFixed(4), "y"]}
-                                    labelFormatter={(label: number) => `x: ${label.toFixed(4)}`}
+                                    contentStyle={{ backgroundColor: "#0f172a", border: "1px solid #1e293b" }}
                                 />
                                 <Line
                                     type="monotone"
@@ -293,8 +283,15 @@ export const GraphPlotter: React.FC<GraphPlotterProps> = ({ width = 600, height 
                                     isAnimationActive={false}
                                 />
                             </LineChart>
-                        </ResponsiveContainer>
+                        ) : (
+                            <div className="text-slate-500 font-mono text-sm animate-pulse">
+                                Calculating coordinates...
+                            </div>
+                        )}
                     </div>
+                    <p className="text-[10px] text-slate-600 mt-2 text-center font-mono">
+                        Note: If the graph is not visible, please try resizing your browser window or refreshing.
+                    </p>
                 </div>
             </div>
         </div>
