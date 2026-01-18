@@ -6,7 +6,6 @@ import {
     YAxis,
     CartesianGrid,
     Tooltip,
-    ResponsiveContainer,
 } from "recharts";
 
 // ===== 数式評価（学習用・簡易） =====
@@ -85,7 +84,7 @@ interface GraphPlotterProps {
     height?: number;
 }
 
-export const GraphPlotter: React.FC<GraphPlotterProps> = ({ width = 600, height = 400 }) => {
+export const GraphPlotter: React.FC<GraphPlotterProps> = ({ width: initialWidth = 600, height: initialHeight = 400 }) => {
     const [mode, setMode] = useState<"normal" | "parametric">("normal");
 
     // 通常関数
@@ -131,7 +130,7 @@ export const GraphPlotter: React.FC<GraphPlotterProps> = ({ width = 600, height 
     return (
         <div className="bg-slate-900 text-white p-6 md:p-8 rounded-3xl shadow-2xl border border-slate-800 max-w-6xl mx-auto my-8 font-sans">
             <div className="flex items-center justify-between mb-8">
-                <h2 className="text-3xl md:text-4xl font-black tracking-tight text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-emerald-400">
+                <h2 className="text-3xl md:text-4xl font-black tracking-tight text-transparent bg-clip-text bg-linear-to-r from-blue-400 to-emerald-400">
                     Interactive Plotter
                 </h2>
                 <div className="px-3 py-1 rounded-full bg-slate-800 border border-slate-700 text-[10px] font-mono text-slate-500 uppercase tracking-widest">
@@ -252,11 +251,11 @@ export const GraphPlotter: React.FC<GraphPlotterProps> = ({ width = 600, height 
                 </div>
 
                 <div className="w-full lg:w-2/3">
-                    <div className="bg-slate-950 p-4 rounded-2xl border border-slate-800 h-[400px] md:h-[500px] shadow-inner flex items-center justify-center overflow-hidden">
+                    <div className="bg-slate-950 p-4 rounded-2xl border border-slate-800 h-100 md:h-125 shadow-inner flex items-center justify-center overflow-hidden">
                         {data.length > 0 ? (
                             <LineChart 
-                                width={600} 
-                                height={400} 
+                                width={initialWidth} 
+                                height={initialHeight} 
                                 data={data}
                                 margin={{ top: 20, right: 30, left: 20, bottom: 20 }}
                             >
