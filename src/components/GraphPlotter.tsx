@@ -129,159 +129,172 @@ export const GraphPlotter: React.FC<GraphPlotterProps> = ({ width = 600, height 
     }
 
     return (
-        <div className="bg-slate-900/80 backdrop-blur-xl text-white p-8 rounded-3xl shadow-[0_0_50px_-12px_rgba(56,189,248,0.3)] border border-slate-700/50 max-w-5xl mx-auto my-8 font-sans transition-all duration-500 hover:shadow-[0_0_60px_-10px_rgba(56,189,248,0.4)]">
-            <div className="flex items-center justify-between mb-10">
-                <h2 className="text-4xl font-black tracking-tight text-transparent bg-clip-text bg-gradient-to-br from-blue-400 via-emerald-400 to-cyan-400">
+        <div className="bg-slate-900 text-white p-6 md:p-8 rounded-3xl shadow-2xl border border-slate-800 max-w-6xl mx-auto my-8 font-sans">
+            <div className="flex items-center justify-between mb-8">
+                <h2 className="text-3xl md:text-4xl font-black tracking-tight text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-emerald-400">
                     Interactive Plotter
                 </h2>
-                <div className="px-4 py-1 rounded-full bg-slate-800/50 border border-slate-700 text-xs font-mono text-slate-400 animate-pulse">
-                    Live Preview
+                <div className="px-3 py-1 rounded-full bg-slate-800 border border-slate-700 text-[10px] font-mono text-slate-500 uppercase tracking-widest">
+                    Data Points: {data.length}
                 </div>
             </div>
 
-            <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 mb-8">
-                <div className="lg:col-span-4 space-y-6">
-                    <div>
-                        <label className="block text-sm font-semibold text-slate-400 mb-1">モード切替</label>
-                        <select
-                            value={mode}
-                            onChange={(e) => setMode(e.target.value as "normal" | "parametric")}
-                            className="w-full bg-slate-800 border border-slate-700 rounded-lg px-4 py-2 focus:ring-2 focus:ring-blue-500 outline-none transition-all cursor-pointer"
-                        >
-                            <option value="normal">y = f(x)</option>
-                            <option value="parametric">パラメトリック</option>
-                        </select>
+            <div className="flex flex-col lg:flex-row gap-8">
+                <div className="w-full lg:w-1/3 space-y-6">
+                    <div className="bg-slate-800/50 p-6 rounded-2xl border border-slate-700/50">
+                        <label className="block text-xs font-bold uppercase tracking-wider text-slate-500 mb-3">Mode</label>
+                        <div className="flex bg-slate-900 p-1 rounded-xl border border-slate-700">
+                            <button 
+                                onClick={() => setMode("normal")}
+                                className={`flex-1 py-2 px-4 rounded-lg text-sm font-bold transition-all ${mode === "normal" ? "bg-blue-600 text-white shadow-lg" : "text-slate-400 hover:text-white"}`}
+                            >
+                                Function
+                            </button>
+                            <button 
+                                onClick={() => setMode("parametric")}
+                                className={`flex-1 py-2 px-4 rounded-lg text-sm font-bold transition-all ${mode === "parametric" ? "bg-blue-600 text-white shadow-lg" : "text-slate-400 hover:text-white"}`}
+                            >
+                                Parametric
+                            </button>
+                        </div>
                     </div>
 
-                    {mode === "normal" ? (
-                        <>
-                            <div>
-                                <label className="block text-sm font-semibold text-slate-400 mb-1">f(x):</label>
-                                <input
-                                    value={expression}
-                                    onChange={(e) => setExpression(e.target.value)}
-                                    className="w-full bg-slate-800 border border-slate-700 rounded-lg px-4 py-2 focus:ring-2 focus:ring-blue-500 outline-none transition-all font-mono"
-                                    placeholder="例: x * x"
-                                />
-                            </div>
-                            <div className="grid grid-cols-2 gap-4">
+                    <div className="bg-slate-800/50 p-6 rounded-2xl border border-slate-700/50 space-y-4">
+                        {mode === "normal" ? (
+                            <>
                                 <div>
-                                    <label className="block text-sm font-semibold text-slate-400 mb-1">xmin:</label>
+                                    <label className="block text-xs font-bold uppercase tracking-wider text-slate-500 mb-2">f(x)</label>
                                     <input
-                                        type="number"
-                                        value={xmin}
-                                        onChange={(e) => setXmin(Number(e.target.value))}
-                                        className="w-full bg-slate-800 border border-slate-700 rounded-lg px-4 py-2 focus:ring-2 focus:ring-blue-500 outline-none"
+                                        value={expression}
+                                        onChange={(e) => setExpression(e.target.value)}
+                                        className="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-3 focus:ring-2 focus:ring-blue-500 outline-none transition-all font-mono text-blue-400"
+                                        placeholder="x * x"
+                                    />
+                                </div>
+                                <div className="grid grid-cols-2 gap-4">
+                                    <div>
+                                        <label className="block text-xs font-bold text-slate-500 mb-1">X Min</label>
+                                        <input
+                                            type="number"
+                                            value={xmin}
+                                            onChange={(e) => setXmin(Number(e.target.value))}
+                                            className="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 outline-none"
+                                        />
+                                    </div>
+                                    <div>
+                                        <label className="block text-xs font-bold text-slate-500 mb-1">X Max</label>
+                                        <input
+                                            type="number"
+                                            value={xmax}
+                                            onChange={(e) => setXmax(Number(e.target.value))}
+                                            className="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 outline-none"
+                                        />
+                                    </div>
+                                </div>
+                            </>
+                        ) : (
+                            <>
+                                <div>
+                                    <label className="block text-xs font-bold uppercase tracking-wider text-slate-500 mb-2">x(t)</label>
+                                    <input
+                                        value={exprX}
+                                        onChange={(e) => setExprX(e.target.value)}
+                                        className="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-3 focus:ring-2 focus:ring-blue-500 outline-none font-mono text-blue-400"
                                     />
                                 </div>
                                 <div>
-                                    <label className="block text-sm font-semibold text-slate-400 mb-1">xmax:</label>
+                                    <label className="block text-xs font-bold uppercase tracking-wider text-slate-500 mb-2">y(t)</label>
                                     <input
-                                        type="number"
-                                        value={xmax}
-                                        onChange={(e) => setXmax(Number(e.target.value))}
-                                        className="w-full bg-slate-800 border border-slate-700 rounded-lg px-4 py-2 focus:ring-2 focus:ring-blue-500 outline-none"
+                                        value={exprY}
+                                        onChange={(e) => setExprY(e.target.value)}
+                                        className="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-3 focus:ring-2 focus:ring-blue-500 outline-none font-mono text-blue-400"
                                     />
                                 </div>
-                            </div>
-                        </>
-                    ) : (
-                        <>
-                            <div>
-                                <label className="block text-sm font-semibold text-slate-400 mb-1">x(t):</label>
-                                <input
-                                    value={exprX}
-                                    onChange={(e) => setExprX(e.target.value)}
-                                    className="w-full bg-slate-800 border border-slate-700 rounded-lg px-4 py-2 focus:ring-2 focus:ring-blue-500 outline-none font-mono"
-                                />
-                            </div>
-                            <div>
-                                <label className="block text-sm font-semibold text-slate-400 mb-1">y(t):</label>
-                                <input
-                                    value={exprY}
-                                    onChange={(e) => setExprY(e.target.value)}
-                                    className="w-full bg-slate-800 border border-slate-700 rounded-lg px-4 py-2 focus:ring-2 focus:ring-blue-500 outline-none font-mono"
-                                />
-                            </div>
-                            <div className="grid grid-cols-2 gap-4">
-                                <div>
-                                    <label className="block text-sm font-semibold text-slate-400 mb-1">tmin:</label>
-                                    <input
-                                        type="number"
-                                        value={tmin}
-                                        onChange={(e) => setTmin(Number(e.target.value))}
-                                        className="w-full bg-slate-800 border border-slate-700 rounded-lg px-4 py-2 focus:ring-2 focus:ring-blue-500 outline-none"
-                                    />
+                                <div className="grid grid-cols-2 gap-4">
+                                    <div>
+                                        <label className="block text-xs font-bold text-slate-500 mb-1">T Min</label>
+                                        <input
+                                            type="number"
+                                            value={tmin}
+                                            onChange={(e) => setTmin(Number(e.target.value))}
+                                            className="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 outline-none"
+                                        />
+                                    </div>
+                                    <div>
+                                        <label className="block text-xs font-bold text-slate-500 mb-1">T Max</label>
+                                        <input
+                                            type="number"
+                                            value={tmax}
+                                            onChange={(e) => setTmax(Number(e.target.value))}
+                                            className="w-full bg-slate-900 border border-slate-700 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 outline-none"
+                                        />
+                                    </div>
                                 </div>
-                                <div>
-                                    <label className="block text-sm font-semibold text-slate-400 mb-1">tmax:</label>
-                                    <input
-                                        type="number"
-                                        value={tmax}
-                                        onChange={(e) => setTmax(Number(e.target.value))}
-                                        className="w-full bg-slate-800 border border-slate-700 rounded-lg px-4 py-2 focus:ring-2 focus:ring-blue-500 outline-none"
-                                    />
-                                </div>
+                            </>
+                        )}
+                        <div>
+                            <label className="block text-xs font-bold uppercase tracking-wider text-slate-500 mb-2">Resolution</label>
+                            <input
+                                type="range"
+                                min="10"
+                                max="1000"
+                                value={points}
+                                onChange={(e) => setPoints(Number(e.target.value))}
+                                className="w-full h-2 bg-slate-900 rounded-lg appearance-none cursor-pointer accent-blue-500"
+                            />
+                            <div className="flex justify-between text-[10px] text-slate-600 mt-1 font-mono">
+                                <span>10 pts</span>
+                                <span>{points} pts</span>
+                                <span>1000 pts</span>
                             </div>
-                        </>
-                    )}
-                    <div>
-                        <label className="block text-sm font-semibold text-slate-400 mb-1">点の数:</label>
-                        <input
-                            type="number"
-                            value={points}
-                            onChange={(e) => setPoints(Number(e.target.value))}
-                            className="w-full bg-slate-800 border border-slate-700 rounded-lg px-4 py-2 focus:ring-2 focus:ring-blue-500 outline-none"
-                        />
+                        </div>
                     </div>
                 </div>
 
-                <div className="lg:col-span-8 bg-slate-800/30 p-6 rounded-3xl border border-slate-700/50 h-[500px] shadow-inner relative group">
-                    <div className="absolute inset-0 bg-gradient-to-br from-blue-500/5 to-emerald-500/5 rounded-3xl pointer-events-none" />
-                    <ResponsiveContainer width="100%" height="100%">
-                        <LineChart data={data} margin={{ top: 20, right: 20, left: 0, bottom: 20 }}>
-                            <CartesianGrid strokeDasharray="3 3" stroke="#334155" />
-                            <XAxis
-                                dataKey="x"
-                                type="number"
-                                stroke="#94a3b8"
-                                fontSize={12}
-                                domain={['dataMin', 'dataMax']}
-                                tickFormatter={(val) => val.toFixed(1)}
-                            />
-                            <YAxis 
-                                stroke="#94a3b8" 
-                                fontSize={12}
-                                domain={['dataMin', 'dataMax']}
-                            />
-                            <Tooltip
-                                contentStyle={{
-                                    backgroundColor: "#1e293b",
-                                    border: "1px solid #334155",
-                                    borderRadius: "8px",
-                                    color: "#f8fafc",
-                                }}
-                                itemStyle={{ color: "#38bdf8" }}
-                                formatter={(value: number) => [value.toFixed(4), "y"]}
-                                labelFormatter={(label: number) => `x: ${label.toFixed(4)}`}
-                            />
-                            <Line
-                                type="monotone"
-                                dataKey="y"
-                                stroke="url(#lineGradient)"
-                                strokeWidth={4}
-                                dot={false}
-                                animationDuration={1500}
-                                isAnimationActive={true}
-                            />
-                            <defs>
-                                <linearGradient id="lineGradient" x1="0" y1="0" x2="1" y2="0">
-                                    <stop offset="0%" stopColor="#38bdf8" />
-                                    <stop offset="100%" stopColor="#10b981" />
-                                </linearGradient>
-                            </defs>
-                        </LineChart>
-                    </ResponsiveContainer>
+                <div className="w-full lg:w-2/3">
+                    <div className="bg-slate-950 p-4 rounded-2xl border border-slate-800 h-[400px] md:h-[500px] shadow-inner">
+                        <ResponsiveContainer width="100%" height="100%">
+                            <LineChart data={data} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
+                                <CartesianGrid strokeDasharray="3 3" stroke="#1e293b" vertical={false} />
+                                <XAxis
+                                    dataKey="x"
+                                    type="number"
+                                    stroke="#475569"
+                                    fontSize={10}
+                                    tickLine={false}
+                                    axisLine={false}
+                                    domain={['dataMin', 'dataMax']}
+                                    tickFormatter={(val) => val.toFixed(1)}
+                                />
+                                <YAxis 
+                                    stroke="#475569" 
+                                    fontSize={10}
+                                    tickLine={false}
+                                    axisLine={false}
+                                    domain={['dataMin', 'dataMax']}
+                                />
+                                <Tooltip
+                                    contentStyle={{
+                                        backgroundColor: "#0f172a",
+                                        border: "1px solid #1e293b",
+                                        borderRadius: "12px",
+                                        fontSize: "12px"
+                                    }}
+                                    itemStyle={{ color: "#38bdf8" }}
+                                    formatter={(value: number) => [value.toFixed(4), "y"]}
+                                    labelFormatter={(label: number) => `x: ${label.toFixed(4)}`}
+                                />
+                                <Line
+                                    type="monotone"
+                                    dataKey="y"
+                                    stroke="#38bdf8"
+                                    strokeWidth={3}
+                                    dot={false}
+                                    isAnimationActive={false}
+                                />
+                            </LineChart>
+                        </ResponsiveContainer>
+                    </div>
                 </div>
             </div>
         </div>
