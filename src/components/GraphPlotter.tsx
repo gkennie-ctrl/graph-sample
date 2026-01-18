@@ -6,6 +6,7 @@ import {
     YAxis,
     CartesianGrid,
     Tooltip,
+    ResponsiveContainer,
 } from "recharts";
 
 // ===== 数式評価（学習用・簡易） =====
@@ -88,7 +89,7 @@ export const GraphPlotter: React.FC<GraphPlotterProps> = ({ width = 600, height 
     const [mode, setMode] = useState<"normal" | "parametric">("normal");
 
     // 通常関数
-    const [expression, setExpression] = useState("1 / x");
+    const [expression, setExpression] = useState("x * x");
     const [xmin, setXmin] = useState(-10);
     const [xmax, setXmax] = useState(10);
 
@@ -119,64 +120,141 @@ export const GraphPlotter: React.FC<GraphPlotterProps> = ({ width = 600, height 
     }
 
     return (
-        <div style={{ padding: 16 }}>
-            <h2>2次元グラフ描画（拡張版）</h2>
+        <div className="bg-slate-900 text-white p-8 rounded-2xl shadow-2xl border border-slate-800 max-w-4xl mx-auto my-8 font-sans">
+            <h2 className="text-3xl font-extrabold mb-8 text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-emerald-400">
+                2次元グラフ描画
+            </h2>
 
-            <label>
-                モード切替:
-                <select
-                    value={mode}
-                    onChange={(e) => setMode(e.target.value as "normal" | "parametric")}
-                >
-                    <option value="normal">y = f(x)</option>
-                    <option value="parametric">パラメトリック</option>
-                </select>
-            </label>
-
-            {mode === "normal" ? (
-                <div>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+                <div className="space-y-4">
                     <div>
-                        f(x):
-                        <input value={expression} onChange={(e) => setExpression(e.target.value)} />
+                        <label className="block text-sm font-semibold text-slate-400 mb-1">モード切替</label>
+                        <select
+                            value={mode}
+                            onChange={(e) => setMode(e.target.value as "normal" | "parametric")}
+                            className="w-full bg-slate-800 border border-slate-700 rounded-lg px-4 py-2 focus:ring-2 focus:ring-blue-500 outline-none transition-all cursor-pointer"
+                        >
+                            <option value="normal">y = f(x)</option>
+                            <option value="parametric">パラメトリック</option>
+                        </select>
                     </div>
+
+                    {mode === "normal" ? (
+                        <>
+                            <div>
+                                <label className="block text-sm font-semibold text-slate-400 mb-1">f(x):</label>
+                                <input
+                                    value={expression}
+                                    onChange={(e) => setExpression(e.target.value)}
+                                    className="w-full bg-slate-800 border border-slate-700 rounded-lg px-4 py-2 focus:ring-2 focus:ring-blue-500 outline-none transition-all font-mono"
+                                    placeholder="例: x * x"
+                                />
+                            </div>
+                            <div className="grid grid-cols-2 gap-4">
+                                <div>
+                                    <label className="block text-sm font-semibold text-slate-400 mb-1">xmin:</label>
+                                    <input
+                                        type="number"
+                                        value={xmin}
+                                        onChange={(e) => setXmin(Number(e.target.value))}
+                                        className="w-full bg-slate-800 border border-slate-700 rounded-lg px-4 py-2 focus:ring-2 focus:ring-blue-500 outline-none"
+                                    />
+                                </div>
+                                <div>
+                                    <label className="block text-sm font-semibold text-slate-400 mb-1">xmax:</label>
+                                    <input
+                                        type="number"
+                                        value={xmax}
+                                        onChange={(e) => setXmax(Number(e.target.value))}
+                                        className="w-full bg-slate-800 border border-slate-700 rounded-lg px-4 py-2 focus:ring-2 focus:ring-blue-500 outline-none"
+                                    />
+                                </div>
+                            </div>
+                        </>
+                    ) : (
+                        <>
+                            <div>
+                                <label className="block text-sm font-semibold text-slate-400 mb-1">x(t):</label>
+                                <input
+                                    value={exprX}
+                                    onChange={(e) => setExprX(e.target.value)}
+                                    className="w-full bg-slate-800 border border-slate-700 rounded-lg px-4 py-2 focus:ring-2 focus:ring-blue-500 outline-none font-mono"
+                                />
+                            </div>
+                            <div>
+                                <label className="block text-sm font-semibold text-slate-400 mb-1">y(t):</label>
+                                <input
+                                    value={exprY}
+                                    onChange={(e) => setExprY(e.target.value)}
+                                    className="w-full bg-slate-800 border border-slate-700 rounded-lg px-4 py-2 focus:ring-2 focus:ring-blue-500 outline-none font-mono"
+                                />
+                            </div>
+                            <div className="grid grid-cols-2 gap-4">
+                                <div>
+                                    <label className="block text-sm font-semibold text-slate-400 mb-1">tmin:</label>
+                                    <input
+                                        type="number"
+                                        value={tmin}
+                                        onChange={(e) => setTmin(Number(e.target.value))}
+                                        className="w-full bg-slate-800 border border-slate-700 rounded-lg px-4 py-2 focus:ring-2 focus:ring-blue-500 outline-none"
+                                    />
+                                </div>
+                                <div>
+                                    <label className="block text-sm font-semibold text-slate-400 mb-1">tmax:</label>
+                                    <input
+                                        type="number"
+                                        value={tmax}
+                                        onChange={(e) => setTmax(Number(e.target.value))}
+                                        className="w-full bg-slate-800 border border-slate-700 rounded-lg px-4 py-2 focus:ring-2 focus:ring-blue-500 outline-none"
+                                    />
+                                </div>
+                            </div>
+                        </>
+                    )}
                     <div>
-                        xmin:
-                        <input type="number" value={xmin} onChange={(e) => setXmin(Number(e.target.value))} />
-                        xmax:
-                        <input type="number" value={xmax} onChange={(e) => setXmax(Number(e.target.value))} />
+                        <label className="block text-sm font-semibold text-slate-400 mb-1">点の数:</label>
+                        <input
+                            type="number"
+                            value={points}
+                            onChange={(e) => setPoints(Number(e.target.value))}
+                            className="w-full bg-slate-800 border border-slate-700 rounded-lg px-4 py-2 focus:ring-2 focus:ring-blue-500 outline-none"
+                        />
                     </div>
                 </div>
-            ) : (
-                <div>
-                    <div>
-                        x(t):
-                        <input value={exprX} onChange={(e) => setExprX(e.target.value)} />
-                    </div>
-                    <div>
-                        y(t):
-                        <input value={exprY} onChange={(e) => setExprY(e.target.value)} />
-                    </div>
-                    <div>
-                        tmin:
-                        <input type="number" value={tmin} onChange={(e) => setTmin(Number(e.target.value))} />
-                        tmax:
-                        <input type="number" value={tmax} onChange={(e) => setTmax(Number(e.target.value))} />
-                    </div>
-                </div>
-            )}
 
-            <div>
-                点の数:
-                <input type="number" value={points} onChange={(e) => setPoints(Number(e.target.value))} />
+                <div className="bg-slate-800/50 p-4 rounded-xl border border-slate-700 h-[400px]">
+                    <ResponsiveContainer width="100%" height="100%">
+                        <LineChart data={data} margin={{ top: 20, right: 20, left: 0, bottom: 20 }}>
+                            <CartesianGrid strokeDasharray="3 3" stroke="#334155" />
+                            <XAxis
+                                dataKey="x"
+                                type="number"
+                                stroke="#94a3b8"
+                                fontSize={12}
+                                tickFormatter={(val) => val.toFixed(1)}
+                            />
+                            <YAxis stroke="#94a3b8" fontSize={12} />
+                            <Tooltip
+                                contentStyle={{
+                                    backgroundColor: "#1e293b",
+                                    border: "1px solid #334155",
+                                    borderRadius: "8px",
+                                    color: "#f8fafc",
+                                }}
+                                itemStyle={{ color: "#38bdf8" }}
+                            />
+                            <Line
+                                type="monotone"
+                                dataKey="y"
+                                stroke="#38bdf8"
+                                strokeWidth={3}
+                                dot={false}
+                                animationDuration={1000}
+                            />
+                        </LineChart>
+                    </ResponsiveContainer>
+                </div>
             </div>
-
-            <LineChart width={width} height={height} data={data}>
-                <CartesianGrid strokeDasharray="3 3" />
-                <XAxis dataKey="x" type="number" />
-                <YAxis />
-                <Tooltip />
-                <Line type="monotone" dataKey="y" dot={false} />
-            </LineChart>
         </div>
     );
 };
