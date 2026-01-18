@@ -108,8 +108,12 @@ export const GraphPlotter: React.FC<GraphPlotterProps> = ({ width = 600, height 
         for (let i = 0; i <= points; i++) {
             const x = parseFloat((xmin + step * i).toFixed(4));
             const y = evaluateFunction(expression, x);
-            if (Number.isFinite(y)) data.push({ x, y });
+            if (Number.isFinite(y)) {
+                data.push({ x, y });
+            }
         }
+        // 通常モードではX軸でソート（RechartsのLine描画に必須）
+        data.sort((a, b) => a.x - b.x);
     } else {
         const step = (tmax - tmin) / points;
         for (let i = 0; i <= points; i++) {
@@ -122,7 +126,6 @@ export const GraphPlotter: React.FC<GraphPlotterProps> = ({ width = 600, height 
                 });
             }
         }
-        // パラメトリックモードの場合はx軸でソートしない（軌跡を描くため）
     }
 
     return (
@@ -243,13 +246,13 @@ export const GraphPlotter: React.FC<GraphPlotterProps> = ({ width = 600, height 
                                 type="number"
                                 stroke="#94a3b8"
                                 fontSize={12}
-                                domain={['auto', 'auto']}
+                                domain={['dataMin', 'dataMax']}
                                 tickFormatter={(val) => val.toFixed(1)}
                             />
                             <YAxis 
                                 stroke="#94a3b8" 
                                 fontSize={12}
-                                domain={['auto', 'auto']}
+                                domain={['dataMin', 'dataMax']}
                             />
                             <Tooltip
                                 contentStyle={{
