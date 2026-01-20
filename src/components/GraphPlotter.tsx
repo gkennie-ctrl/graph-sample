@@ -6,6 +6,7 @@ import {
     YAxis,
     CartesianGrid,
     Tooltip,
+    ReferenceLine,
 } from "recharts";
 
 // ===== 数式評価（学習用・簡易） =====
@@ -320,6 +321,8 @@ export const GraphPlotter: React.FC<GraphPlotterProps> = ({ width: initialWidth 
                                 margin={{ top: 20, right: 30, left: 20, bottom: 20 }}
                             >
                                 <CartesianGrid stroke="#1e293b" strokeDasharray="3 3" vertical={false} />
+                                <ReferenceLine x={0} stroke="#64748b" strokeWidth={2} label={{ value: 'Y', position: 'insideTopLeft', fill: '#94a3b8', fontSize: 10 }} />
+                                <ReferenceLine y={0} stroke="#64748b" strokeWidth={2} label={{ value: 'X', position: 'insideBottomRight', fill: '#94a3b8', fontSize: 10 }} />
                                 <XAxis 
                                     dataKey="x" 
                                     type="number" 
