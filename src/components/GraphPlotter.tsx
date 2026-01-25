@@ -85,7 +85,9 @@ interface GraphPlotterProps {
     height?: number;
 }
 
-export const GraphPlotter: React.FC<GraphPlotterProps> = ({ width: initialWidth = 600, height: initialHeight = 400 }) => {
+export const GraphPlotter: React.FC<GraphPlotterProps> = (props) => {
+    const initialWidth = props.width ?? 800;
+    const initialHeight = props.height ?? 550;
     const [mode, setMode] = useState<"normal" | "parametric">("normal");
 
     // 通常関数
@@ -130,7 +132,8 @@ export const GraphPlotter: React.FC<GraphPlotterProps> = ({ width: initialWidth 
 
     // プリセット関数
     const presets = [
-        { label: "二次関数 (x²)", value: "x * x" },
+        { label: "二次関数 (x²)", value: "x**2" },
+        { label: "三次関数 (x**3-60*x)", value: "x**3-60*x" },
         { label: "サイン波 (sin x)", value: "sin(x)" },
         { label: "正規分布", value: "exp(-x*x/2) / sqrt(2*PI)" },
         { label: "シグモイド関数", value: "1 / (1 + exp(-x))" },
@@ -315,8 +318,8 @@ export const GraphPlotter: React.FC<GraphPlotterProps> = ({ width: initialWidth 
                         
                         {data.length > 0 ? (
                             <LineChart 
-                                width={800} 
-                                height={550} 
+                                width={initialWidth} 
+                                height={initialHeight} 
                                 data={data}
                                 margin={{ top: 20, right: 30, left: 20, bottom: 20 }}
                             >
@@ -346,8 +349,14 @@ export const GraphPlotter: React.FC<GraphPlotterProps> = ({ width: initialWidth 
                                     }}
                                     itemStyle={{ color: "#38bdf8", fontWeight: "bold" }}
                                     labelStyle={{ color: "#94a3b8", marginBottom: "4px" }}
-                                    formatter={(value: number) => [value.toFixed(4), "y"]}
-                                    labelFormatter={(label: number) => `x: ${label.toFixed(4)}`}
+                                    formatter={(value: number | string | undefined) => {
+                                        const v = typeof value === "number" ? value : Number(value);
+                                        return [Number.isFinite(v) ? v.toFixed(4) : "-", "y"];
+                                    }}
+                                    labelFormatter={(label: number | string | undefined) => {
+                                        const v = typeof label === "number" ? label : Number(label);
+                                        return `x: ${Number.isFinite(v) ? v.toFixed(4) : "-"}`;
+                                    }}
                                 />
                                 <Line
                                     type="monotone"
